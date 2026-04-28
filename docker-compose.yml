@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  canopy:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    container_name: canopy-node
+    restart: unless-stopped
+    ports:
+      - "${P2P_PORT:-9090}:9090"
+      - "${RPC_PORT:-50051}:50051"
+      - "${REST_PORT:-8080}:8080"
+    volumes:
+      - canopy-data:/root/.canopy
+    environment:
+      - CANOPY_HOME=/root/.canopy
+      - CANOPY_LOG_LEVEL=${LOG_LEVEL:-info}
+      - CANOPY_CHAIN_ID=${CHAIN_ID:-canopy-1}
+    networks:
+      - canopy-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  canopy-auto-update:
+    build:
+      context: .docker/auto-update
+      dockerfile: Dockerfile
+    container_name: canopy-auto-update
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - canopy-data:/root/.canopy
+    environment:
+      - UPDATE_INTERVAL=${UPDATE_INTERVAL:-3600}
+      - CANOPY_SERVICE=canopy
+      - GITHUB_REPO=${GITHUB_REPO:-canopy-network/canopy}
+    depends_on:
+      - canopy
+    networks:
+      - canopy-net
+
+volumes:
+  canopy-data:
+    driver: local
+
+networks:
+  canopy-net:
+    driver: bridge
