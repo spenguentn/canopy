@@ -15,7 +15,7 @@ services:
       - canopy-data:/root/.canopy
     environment:
       - CANOPY_HOME=/root/.canopy
-      - CANOPY_LOG_LEVEL=${LOG_LEVEL:-info}
+      - CANOPY_LOG_LEVEL=${LOG_LEVEL:-debug}
       - CANOPY_CHAIN_ID=${CHAIN_ID:-canopy-1}
     networks:
       - canopy-net
@@ -23,8 +23,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8080/v1/health"]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 15s
+      retries: 5
+      start_period: 30s
 
   canopy-auto-update:
     build:
