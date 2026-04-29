@@ -15,7 +15,7 @@ services:
       - canopy-data:/root/.canopy
     environment:
       - CANOPY_HOME=/root/.canopy
-      - CANOPY_LOG_LEVEL=${LOG_LEVEL:-debug}
+      - CANOPY_LOG_LEVEL=${LOG_LEVEL:-info}
       - CANOPY_CHAIN_ID=${CHAIN_ID:-canopy-1}
     networks:
       - canopy-net
@@ -38,6 +38,7 @@ services:
     environment:
       - UPDATE_INTERVAL=${UPDATE_INTERVAL:-3600}
       - CANOPY_SERVICE=canopy
+      # point this at my personal fork for testing
       - GITHUB_REPO=${GITHUB_REPO:-canopy-network/canopy}
     depends_on:
       - canopy
