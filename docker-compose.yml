@@ -24,7 +24,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 60s
+      # increased from 60s - node takes longer to be ready on my machine
+      start_period: 120s
 
   canopy-auto-update:
     build:
